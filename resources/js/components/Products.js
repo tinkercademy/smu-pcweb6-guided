@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import SelectedProduct from './SelectedProduct';
+import ShoppingCart from './ShoppingCart';
 
 class Products extends Component {
 
@@ -11,10 +12,15 @@ class Products extends Component {
             currentProduct: [],
             shoppingCart: [],
             showProduct: false,
+            showCart: false,
         };
 
         let _isMounted = false;
         this.addToCart = this.addToCart.bind(this);
+        this.showCart = this.showCart.bind(this);
+        this.addqty = this.addqty.bind(this);
+        this.minusqty = this.minusqty.bind(this);
+        this.checkOut = this.checkOut.bind(this);
     }
     
     componentDidMount(){
@@ -59,6 +65,49 @@ class Products extends Component {
         }
     }
 
+    showCart(){
+        this.setState({
+            showCart: !this.state.showCart,
+        });
+    }
+
+    addqty(product){
+        this.state.shoppingCart.forEach(item =>{
+            if(item.name === product.name){
+                item.qty = parseInt(item.qty) + 1;
+                this.setState({
+                    shoppingCart: this.state.shoppingCart
+                });
+            }
+        });
+    }
+
+    minusqty(product){
+        this.state.shoppingCart.forEach(item =>{
+            if(item.name === product.name){
+                item.qty = parseInt(item.qty) - 1;
+                this.setState({
+                    shoppingCart: this.state.shoppingCart
+                });
+            }
+        });
+    }
+
+    checkOut(){
+        this.state.shoppingCart.forEach(item =>{
+            axios.post('/checkout', {
+                product: item.name,
+                quantity: item.qty
+            })
+            .then(response => {
+                this.setState({
+                    allProducts: response.data,
+                    });
+            })
+        this.setState({showCart: !this.state.showCart})
+        });
+    }
+
     renderProducts(){
         return this.state.allProducts.map(product => {
             return(
@@ -89,9 +138,25 @@ class Products extends Component {
                             }
                         </div>
 
-                        <div className="col-2"></div>
+                        <div className="col-2">
+                            {this.state.showProduct ?  
+                                <button className="cart" onClick={() => this.showCart()}><i className="fas fa-shopping-cart"></i></button>
+                                : null  
+                            }
+                        </div>
                     </div>
-                </div>      
+                </div>
+
+                {this.state.showCart ?  
+                    <ShoppingCart    
+                        cartItems = {this.state.shoppingCart}
+                        closePopup = {this.showCart}
+                        add = {this.addqty}
+                        minus = {this.minusqty}
+                        checkOut = {this.checkOut}
+                    />  
+                    : null  
+                }
             </div>
         );
     }

@@ -26,3 +26,4 @@ Route::get('/products', function(){
 });
 
 Route::get('/productsALL', 'ProductsController@index');
+Route::post('/checkout', 'ProductsController@update');
