@@ -24,3 +24,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/products', function(){
     return view('products.index');
 });
+
+Route::get('/productsALL', 'ProductsController@index');

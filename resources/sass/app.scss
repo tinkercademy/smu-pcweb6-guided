@@ -6,3 +6,18 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+.productbtn{
+    background-color: transparent;
+    border: none;
+}
+
+.productbtn:hover{
+    background-color: grey;
+}
+
+.productdesc{
+    font-weight: bold;
+    font-style: italic;
+    font-size: 25px;
+}
